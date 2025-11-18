@@ -147,3 +147,50 @@ sum_of = 0
 for i in range(1,container+1):
     sum_of += i
 print("Sum of first",container,"numbers is:",sum_of)
+
+
+# Functions in python
+def hello():
+    print("Hello Brother")
+hello()
+
+# Functions with parameters
+def user(name,age,course):
+    print("Hello",name,"Your age is",age,"& You are pursuing",course)
+user("Rohit",21,"BCA")
+
+# Function to calculate avg of 3 numbers
+def avg(a,b,c):
+    result = (a+b+c) / 3
+    #f stands for f-string / formatted string that lets you insert variables directly inside a string using {}.
+    print(f"The sum of {a,b,c} is {result}") 
+avg(10,20,30)
+
+# Function with return statements
+def sum(a,b):
+    return a+b
+print(f"Sum of a & b is: {sum(10,20)}.")
+
+# Functions with default parameter values
+def greet(name,course="BCA",college="GGSIPU"):
+    print(f"Hello {name},You are pursuing {course} in {college}.")
+greet("Rohit")
+greet("Manya","BBA","Dr.Ambedkar university")
+
+# Lambda Function
+avg = lambda a,b,c: (a+b+c)/3
+print(int(avg(10,20,30)))
+
+
+# WAF to print factorial of 'n'.
+def factorial(num,start):
+    result = 1
+    while(start <= num):
+        result *= start
+        start += 1  
+    return result
+        
+number = int(input("Enter a number:"))
+start = 1
+data = factorial(number,start)
+print(f"Factorial of {number} is {data}.")

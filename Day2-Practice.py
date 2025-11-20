@@ -59,3 +59,66 @@ print("Numbers divisible by 3 and 5 from 1 to 100 are:")
 for i in range(1,100+1):
     if i % 3 == 0 and i % 5 == 0:
         print(i)
+
+# Q7 Design a program to continuously input a number n from user & print if it is positive or negativve until the user enters "Quit".
+while(True):
+    n = input("Enter a number: ")
+
+    if n == "Quit":
+        print("Quiting the app.")
+        break
+    else:
+        num = int(n)
+        if num < 0:
+            print ("Negative Number.")
+        elif num > 0:
+           print("Positive Number.")
+        elif num == 0:
+            print("Neither positive nor negative.")
+
+# Q8 Let's create a simple calculator that performs arithmetic operations. Create a function calculator (a, b operation) that performs addition, subtraction,
+# multiplication or division based on the operation parameter. [Operation parameter can have values +, -, * & /]
+def calculator(a,b,operation):
+    if(operation == '+'):
+        print(f"The sum of 2 numbers: {a + b}")
+    elif(operation == '-'):
+        print(f"The subtraction of 2 numbers: {a - b}")
+    elif(operation == '*'):
+        print(f"The multiplication of 2 numbers: {a * b}")
+    elif operation == '/':
+        print(f"The division of 2 numbers: {a / b}")
+    else:
+        print("Invalid operation.")
+
+calculator(30,5,"/")
+
+# Q9 Write a function is_prime(n) that returns true if n is a prime number and False otherwise, using a loop.
+def is_prime(n):
+    # a non-prime number n always get divided by atleast one number in range(2,n-1)
+    # since n will be divisible by 1 always and by itself therefore we took that range
+    for i in range(2,n-1):
+        if (n%i == 0):
+            return False
+    # if not found any divisible number
+    return True
+data = is_prime(4)
+print(data)
+
+# Q10 Create a "Number Guessing Game". Given a secret number (already decided by you), wirte a program that asks the user to guess it and prints:
+# Too high -> if the guess is above the number
+# Too low -> if the guess is below
+# Correct! -> if the guess match.
+def guess_game(number):
+    print(f"Hint: The number lies between {number - 10} and {number +10}")
+    guess = int(input("Enter a guess number: "))
+    while(guess != number):
+        if(guess > number):
+            print("Too High")
+        else:
+            print("Too low")
+        guess = int(input("Enter your guess again: "))
+    # if your guess is equal to number then loop exists and it'll be print
+    print("Correct !")
+
+number = 13
+guess_game(number)

@@ -99,6 +99,7 @@ for i in list4:
 # Tuples -> immutable sequence of values
 # Tuples are ordered (Items have a defined order and can be accessed by index), immutable, allows dupliates and heterogeneous.
 # Since they are immutable they are faster as compare to Lists.
+# Elements cannot be added directly to a tuple because it is immutable.
 
 tuple1 = (1,2,3,4,5,"Rohit")
 print(tuple1)
@@ -157,7 +158,7 @@ print(dict)
 
 
 # Dictionary Methods
-print(dict.keys()) # returns all keys
+print(dict.keys()) # returns all keys present in the dictionary as a view object.
 print(list(dict.values())) # returns all values and we are additionally typecasting it to lists data types
 print(dict.items()) #returns (key,val) pairs
 dict.update(

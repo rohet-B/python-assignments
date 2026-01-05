@@ -55,7 +55,7 @@ pen2.writing()
 # Attributes in OOP
 # They are variabls that belong to a class or an object.
 # Types of Attributes:
-# 1. Class Attributes -> Belong to the class, shared by all objects + defined outside any method in the class
+# 1. Class Attributes or Variable -> Belong to the class, shared by all objects + defined outside any method in the class
 class Student2:
     college = "ABC COLLEGE" #class attribute
 
@@ -63,7 +63,7 @@ stu1 = Student2()
 print(stu1.college)
 print(Student2.college) # Class Attribute can also be accessed with class name.
 
-# 2. Instance Attributes -> Belong to individual object + defined inside the __init__ method using self + Each object gets its own copy + Has high priority than class attribute
+# 2. Instance Attributes or Variable -> Belong to individual object + defined inside the __init__ method using self + Each object gets its own copy + Has high priority than class attribute
 class Student3():
     gpa = 5.0 #Class Attribute
     def __init__(self,name,gpa): #instance attributes
@@ -160,7 +160,7 @@ class BankAccount:
         self.name = name 
         self.__balance = balance 
     def get_salary(self):
-        return (f"Total balance is {self.__balance}") 
+        return (f"Total balance is {self.__balance}") # note: getter should use return rather than print
     def set_salary(self,new_balance):
         self.__balance = new_balance
         
@@ -212,6 +212,11 @@ acc1 = Accountant(50_000,"CA")
 print(acc1.salary,acc1.role,acc1.start_time,acc1.end_time)
 
 # 3. Multiple Inheritance -> A child inherits from more than one parent class.
+# MRO (Method Resolution Order) is the order in which Python searches classes when looking for a method or attribute, especially in multiple inheritance. 
+# It determines which parent class’s method gets called first. In your example, TA inherits from Teacher and Student, and the MRO of TA is [TA, Teacher, Student, object]. 
+# When super().__init__(salary) is called, Python automatically follows the MRO and executes Teacher.__init__ to set the salary. Since Student is further down the MRO, we call Student.__init__(self, gpa) directly and pass self explicitly to set the GPA. 
+# Finally, self.name = name sets the attribute unique to TA. This ensures that all parent constructors are properly executed, giving the TA object all three attributes: name, salary, and gpa.
+
 class Teacher:
     def __init__(self,salary):
         self.salary = salary
@@ -270,6 +275,7 @@ print("Rohit "+"Biswash")
 
 # 2. Function Overriding:
 # When child class provides its own version of a method that already exists in parent class + It's a Runtime Polymorphism (which method to call based on the object is created and used during runtime)
+# + When overriding a method or function, the method name and parameter structure should be consistent.
 class Animal:
     def sound(self):
         print("Some Generic Sound will be made")

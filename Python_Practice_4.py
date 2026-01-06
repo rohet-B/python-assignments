@@ -213,3 +213,147 @@ print(f"The Brand is {C1.brand} and model is {C1.model} has {C1.seats} seats.")
 
 B1 = Bike("Royal Enfield","Continental GT 650",349)
 print(f"The Brand is {B1.brand} and model is {B1.model} has {B1.engine_cc}cc.")
+
+
+# Question: Create an abstract class Employee with an abstract method calculate_salary()
+# Create subclasses Intern, FullTimeEmployee and ContractEmployee that implement the method differently.(Abstraction)
+from abc import ABC,abstractmethod
+
+class Employee(ABC):
+    @abstractmethod
+    def calculate_salary(self):
+        pass
+
+class Intern(Employee):
+    def __init__(self,salary,month):
+        self.salary = salary
+        self.month = month
+
+    def calculate_salary(self):
+        print (f"Your total salary for {self.month} months is {self.salary*self.month}.")
+        
+class FullTimeEmployee(Employee):
+    def __init__(self,salary,extra_hours):
+        self.salary = salary
+        self.extra_hours = extra_hours
+
+    def calculate_salary(self):
+        if self.extra_hours > 0 and self.extra_hours <= 2:
+            self.extra_hours = self.extra_hours * 3000
+        elif self.extra_hours > 2 and self.extra_hours <= 4:
+            self.extra_hours = self.extra_hours * 6000
+        else:
+            print("No extra hours working.")
+
+        print (f"Your total salary for 12 months is {self.salary*12}, Additionally extra working hours income is {self.extra_hours}")
+
+class ContractEmployee(Employee):
+    def __init__(self,contract_Time):
+        self.contract_Time = contract_Time
+    
+    def calculate_salary(self):
+        if self.contract_Time <= 3:
+            self.salary = 15_000
+        elif self.contract_Time <=6:
+            self.salary = 30_000
+        else:
+            print("Contract time must be between 3 to 6 months.")
+        
+        print(f"Your total salary for 12 months is {self.salary}.")
+
+I1 = Intern(6_000,2)
+I1.calculate_salary()
+
+F1 = FullTimeEmployee(2000,3)
+F1.calculate_salary()
+
+C1 = ContractEmployee(4)
+C1.calculate_salary()
+
+
+# Question: Create a class Person that allows the constructor to work with:
+# name only, name + age, name + age + address 
+# As direct constructor overloading (multiple coonstructors) are not allowed but we have to 
+# use default parameters to simulate constructor overlaoding. (Constructor Overloading (with Default Parameters))
+class Person:
+    def __init__(self,name,age=18,address="South Avenue, New Delhi"):
+        self.name = name
+        self.age = age
+        self.address = address
+
+    def get(self):
+        print(f"Your name is {self.name} and your age is {self.age}, Your address is at {self.address}.")
+    
+P1 = Person("Rohit",21,"Narmada Apartments")
+P1.get()
+
+
+# Question: Create a class Player with:
+# a class variable player_count + instance variables name and level
+# Track how many players were created. (Instance & Class Attributes)
+
+class Player:
+    player_count = 0
+
+    def __init__(self,name,level):
+        self.name = name
+        self.level = level
+        Player.player_count += 1
+    
+    @classmethod
+    def total_players(cls):
+        print(f"Total players created {cls.player_count}.")
+
+P1 = Player("Rohit","Level 1")
+P2 = Player("Rohit","Level 2")
+P1.total_players()
+
+
+# Question: Create the following classes: Herbivore, Carnivore, Omnivore with some attributes and methods. Then create a class Bear that inherits from all 
+# the above classes to showcase how multiple inheritance works. (Multiple Inheritance)
+
+class Herbivore:
+    food_type = "Plants"
+    hunting_skill = False
+
+    def eat_plants(self):
+        print("Eats plants")
+
+class Carnivore:
+    food_type2 = "Meat"
+    hunting_skill = True
+
+    def eat_meat(self):
+        print("Eats meat")
+
+class Omnivore:
+    food_type3 = "Plants and Meat"
+    diet_type = "Mixed"
+
+    def eat_both(self):
+        print("Eats both plants and meat")
+
+class Bear(Herbivore,Carnivore,Omnivore):
+    def __init__(self,special):
+        self.special = special
+
+    def info(self):
+
+        if self.special == True:
+            print(f"This special bear eats {self.food_type} for 6 months and {self.food_type2} for next 6 months. In short it has {self.diet_type} diet type.")
+        else:
+            print("Information regarding Bears:")
+        
+            # Herbivore.eat_plants()
+            # Carnivore.eat_meat()
+            # Omnivore.eat_both()
+
+            # Here you directly called methods from the parent classes using the class names, such as Herbivore.eat_plants(), which are instance methods and require an object (or self) to be called.
+            # Therefore self is used
+            self.eat_plants()
+            self.eat_meat()
+            self.eat_both()
+
+        
+B1 = Bear(False)
+B1.info()

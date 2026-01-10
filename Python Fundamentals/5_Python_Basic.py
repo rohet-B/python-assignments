@@ -207,3 +207,52 @@ print(labels)
 word = ["hello","python","apnaCollege"]
 words = [element.upper() for element in word]
 print(words)
+
+
+# JSON (JavaScript object Notation) Module 
+# Lightweight data format used to exchange data between programs, APIs, websites etc. JSON format is very similar to python dictionaries.
+# Python's "json" module allows you to read, write, encode & decode JSON Data.
+# JSON uses key value pairs.
+# In Python, we call ["data1","data2"] it a list, but in JSON, it is called an array.
+# In python, we call {"key":"Value"} it a dictionary, but in JSON, it is called an object.
+
+import json
+# Converting Python to JSON
+# we use "dumps()" to convert python dictionary or object into JSON String.
+
+data = {
+    "name":"Namo",
+    "age":21,
+    "dob":"7-1-2005",
+    "marks":[85,90,95]
+}
+json_string = json.dumps(data)
+print(type(json_string))
+print(json_string)
+
+# Converting JSON to python
+# we use "loads()" to convert JSON string into python dictionary or object.
+json_data = '{"name": "Namo", "age": 21, "dob": "7-1-2005", "marks": [85, 90, 95]}'
+python_obj = json.loads(json_data)
+print(python_obj["name"])
+print(type(python_obj))
+
+
+# Reading JSON from a file (json.load())
+# jsonfile.txt contains this:
+# {
+#   "name": "Rohit",
+#   "age": 21,
+#   "skills": ["Python", "JavaScript"]
+# }
+
+with open("filename.txt","r") as f:
+    data = json.load(f)
+print(data["name"])
+
+# Writing JSON to a file (json.dump())
+data = {"name":"Namo","area":"shadipur"}
+with open("data.json","w") as f:
+    json.dump(data,f,indent=4,sort_keys=True)
+    # indent=4 makes the JSON looks neat and readable.
+    # sort_keys=True will sort the keys in ascending order A -> Z + It does not support descending order.

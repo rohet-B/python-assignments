@@ -1,4 +1,4 @@
-# This Phase is all about Data processing.
+# This Phase is all about Data.
 ### For this we need Anaconda: 
 - Anaconda is a free software distribution that provides Python along with many pre-installed libraries and tools, mainly for data science and scientific computing.
 - Software distribution is a method of delivering software as a complete, installable package. Example: MS Office → Word, Excel, PowerPoint together
@@ -38,7 +38,7 @@
 - It manages: Creating new environment + Installing packages + Updating Conda
 - We should not use base enviroment for projects.
 
-### Installing Jupyter Notebook
+### Installing Jupyter Notebook (first activate base conda using `conda activate`)
 - Go to desktop in `Anaconda Prompt` using cd command and make different directory to understand the concept.
 - `conda install jupyter`
 - Now run this command (after conda install jupyter) `jupyter notebook` 

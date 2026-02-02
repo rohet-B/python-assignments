@@ -18,12 +18,16 @@
 9. **Deployment**
     - Deploy the trained model into a real-world environment so users or applications can use it.
 
-### In this Part we will start with EDA.
+## In this Part we will start with EDA.
 - After collecting data we don't just start with making machine learning models instead we first clean the data & then analys the cleaned data.
 - For this:
     1. We first generate statistical summary from the cleaned data and then we create visualizations from it.
     2. Once done, We analyse data to find out patterns, structures, trends and many other things.
 
-### Now to perform EDA, we will use Pandas
+## Now to perform EDA, we will use Pandas
 - Pandas is a Python library used for data analysis and data manipulation.
 - Pandas helps us store, clean, analyze and manipulate data easily using tables (rows and columns).
+
+## [Kaggle](https://www.kaggle.com/)
+- Kaggle is an online platform for data science and machine learning.
+- It provides real world data in (CSV,Excel,text,image) format.

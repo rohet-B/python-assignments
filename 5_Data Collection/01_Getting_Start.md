@@ -52,4 +52,23 @@
 - A database in MySQL is an organized collection of data stored in the form of `tables`, where data can be easily stored, managed and retrieved using SQL.
 ### In MySQL, columns and rows have specific names
 - Column => Field & Attribute
+
 - Row => Record & Tuple
+### Connecting VsCode with MySQL
+- Refer to this [video](https://youtu.be/FuSxGqWacd0?si=a3GYs18h9cns-4-r).
+### Database Queries:
+1. `CREATE DATABASE db_name;` OR `CREATE DATABASE IF NOT EXISTS db_name;`
+
+2. `DROP DATABASE db_name;` OR `DROP DATABASE IF EXISTS db_name;`
+3. `CREATE TABLE table_name(column_name1 datatype constraint,column_name2 datatype constraint,);` -> Creates Table or Schema (structure) of the table.
+
+### CHAR Vs VARCHAR
+1. `CHAR` is a fixed-length data type, which means it always uses the same amount of storage space, even if the actual value is shorter. For example, if `CHAR(10)` is used to store the value "ABC", the database will still allocate 10 characters and fill the remaining space with blank spaces. This makes CHAR slightly faster but can `waste` memory.
+
+2. On the other hand, `VARCHAR` is a variable-length data type, so it only uses the space required to store the actual data. If `VARCHAR(10)` stores "ABC", it will use only 3 characters. Because of this, VARCHAR is more `memory-efficient` and is commonly used for values like names, emails and addresses where the length can change.
+
+### `UNSIGNED` Datatype
+- In databases (like MySQL), UNSIGNED means a number cannot be negative.
+
+- Normally, numeric data types can store both negative and positive values. When you add `UNSIGNED`, the column stores only zero and positive numbers.
+- For example, an `INT` column can store values from -2,147,483,648 to 2,147,483,647. But an `INT UNSIGNED` column can store values from 0 to 4,294,967,295. Since negative numbers are not allowed, the space that was used for negatives is used to store bigger positive numbers instead.

@@ -72,3 +72,67 @@
 
 - Normally, numeric data types can store both negative and positive values. When you add `UNSIGNED`, the column stores only zero and positive numbers.
 - For example, an `INT` column can store values from -2,147,483,648 to 2,147,483,647. But an `INT UNSIGNED` column can store values from 0 to 4,294,967,295. Since negative numbers are not allowed, the space that was used for negatives is used to store bigger positive numbers instead.
+
+### What are Constraints?
+- Constraints in MySQL are rules applied to table columns to make sure the data stored in the database is correct, valid and consistent.
+- Types of Constraints in MySQL:
+    1. `NOT NULL` - Ensures that a column cannot have NULL (empty) values.
+
+    2. `UNIQUE` - Ensures that all values in a column are different.
+    3. `PRIMARY KEY` - Combines NOT NULL + UNIQUE, Uniquely identifies each record in a table, Only one primary key per table
+        - SYNTAX: `CREATE TABLE table_name(ID INT PRIMARY KEY,NAME VARCHAR(30));` OR
+        - `CREATE TABLE table_name(ID INT,NAME VARCHAR(50),PRIMARY KEY(ID));`
+    4. `FOREIGN KEY` - Creates a relationship between two tables, `FOREIGN KEY` is a column in one table that refers to the `PRIMARY KEY` of another table, `FOREIGN KEY` can have duplicate & null values, There can be multiple `FOREIGN KEYS` in a table.
+        - SYNTAX: `CREATE TABLE table_name(CUSTOMER_ID INT,FOREIGN KEY (CUSTOMER_ID) REFERENCES another_TABLE_name(ID));`
+    5. `CHECK` - Ensures that values meet a specific condition.
+        - SYNTAX: `CONSTRAINT constraint_name CHECK (col_name >= 13);`
+        - Keep in mind `constraint_name` is optional.
+    6. `DEFAULT` - Sets a default value if no value is provided.
+        - SYNTAX: `CREATE TABLE USER(ID INT,FOLLOWERS INT DEFAULT 0);`
+    7. `AUTO_INCREMENT` - Automatically increases numeric values (usually for IDs).
+
+### `INSERT` SYNTAX - Order of values must match column list order.
+- SYNTAX: 
+    - `INSERT INTO table_name VALUES (Column1_Value1, Column2_Value1, Column3_Value1),(column1_value2,column2_value2,column3_value2);`
+
+    - OR
+    - `INSERT INTO table_name (COL1, COL2, COL3) VALUES (column1_value1, column2_value1, column3_value1),(column1_value2, column2_value2, column3_value2);`
+- `Note:` The `INSERT` statement without a column list is useful when inserting multiple rows at once and when values are provided for all columns in the table in the correct order. For all other cases—such as inserting selected columns, using `DEFAULT` or `AUTO_INCREMENT` values by skipping columns-the column list should be used.
+
+### CLAUSE - part of a SQL statement that performs a specific task.
+1. `SELECT` 
+    - `SELECT` is used to select & show data from the table.
+
+    - SYNTAX:
+        1. `SELECT col1,col2 FROM table_name;`
+
+        2. `SELECT * FROM table_name;`
+2. `WHERE`
+    - `WHERE` is used to define conditions.
+    
+    - SYNTAX:
+        1. `SELECT col1,col2 FROM table_name WHERE conditions;`
+    - Operators used with `WHERE` Clause:
+        1. Arithmetic Operators: `+`, `-`, `*`, `/`, `%` (Modulus)
+
+        2. Comparison Operators: `=`, `!=`, `>`, `>=`, `<` ,`<=`
+        3. Logical Operators: 
+            - `AND`, `OR` 
+
+            - `NOT` - Negate the given condition.
+                - `SELECT * FROM table_name WHERE col_name NOT IN("val1","val2");`
+            - `IN` - Matches any value in the list.
+                - `SELECT * FROM table_name WHERE EMAIL IN ("val1","val2","val3");`
+            - `BETWEEN` - `BETWEEN` is used to select values within a specified range and it uses the `AND` operator to define the lower and upper limits.
+            - `ALL` - Compares a value with all values returned by a subquery.
+                - `SELECT * FROM students WHERE marks > ALL (SELECT marks FROM topper);`
+            - `LIKE` - Used to search for a pattern in a column, it uses wildcard characters `%` - it means multiple characters and `_` - it means single character.
+            - `ANY` - Compares a value with any one value returned by a subquery.
+                - `SELECT * FROM students WHERE marks > ANY (SELECT marks FROM topper);`
+        4. Bitwise Operators: `&` (Bitwise AND), `|` (Bitwise OR)
+
+### KEYWORDS 
+1. `DISTINCT`
+    - `DISTINCT` is a keyword used with `SELECT` to remove duplicate values from the result.
+    - Syntax:
+        `SELECT DISTINCT col_name FROM table_name;`

@@ -124,10 +124,11 @@
             - `IN` - Matches any value in the list.
                 - `SELECT * FROM table_name WHERE EMAIL IN ("val1","val2","val3");`
             - `BETWEEN` - `BETWEEN` is used to select values within a specified range and it uses the `AND` operator to define the lower and upper limits.
-            - `ALL` - Compares a value with all values returned by a subquery.
+            - `ALL` - Compare a value with a set of values returned by a subquery. The condition becomes true only if the comparison is true for every value in that set.
                 - `SELECT * FROM students WHERE marks > ALL (SELECT marks FROM topper);`
             - `LIKE` - Used to search for a pattern in a column, it uses wildcard characters `%` - it means multiple characters and `_` - it means single character.
-            - `ANY` - Compares a value with any one value returned by a subquery.
+                - `SELECT * FROM table_name WHERE EMAIL LIKE "R%";`
+            - `ANY` - Compare a value with a set of values returned by a subquery. The condition becomes true if the comparison is true for at least one value in that set.
                 - `SELECT * FROM students WHERE marks > ANY (SELECT marks FROM topper);`
         4. Bitwise Operators: `&` (Bitwise AND), `|` (Bitwise OR)
 

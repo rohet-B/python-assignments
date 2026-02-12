@@ -131,9 +131,56 @@
             - `ANY` - Compare a value with a set of values returned by a subquery. The condition becomes true if the comparison is true for at least one value in that set.
                 - `SELECT * FROM students WHERE marks > ANY (SELECT marks FROM topper);`
         4. Bitwise Operators: `&` (Bitwise AND), `|` (Bitwise OR)
+3. `LIMIT`
+    - used to restrict the number of rows returned by a query.
+
+    - SYNTAX:
+        - `SELECT col1,col2 FROM table_name LIMIT number;`
+4. `ORDER BY`
+    - Sort in ascending (ASC) or descending order (DESC)
+
+    - SYNTAX:
+        - `SELECT * FROM table_name ORDER BY col_name ASC;`
+5. `GROUP BY`
+    - Used to group rows that have the same values in one or more columns.
+
+    - Mostly used with aggregate functions.
+    - All columns in `SELECT` must either be included in the `GROUP BY` clause or used inside an aggregate function.
+    - SYNTAX:
+        - `SELECT col1,col2 FROM table_name GROUP BY col_name(s);`
+6. `HAVING`
+    - Used when we want to apply any conditions after grouping.
+
+    - `WHERE` is used to filter individual rows before grouping.
+    - Grouping is necessary for `HAVING`.
+    - SYNTAX:
+        - `SELECT col1,col2 FROM table_name GROUP BY col_name(S) HAVING CONDITION;`
+
+### AGGREGATE FUNCTIONS
+- Aggregate functions perform a calculation on a set of values and return a single value.
+    1. `COUNT()`
+
+    2. `MAX()`
+    3. `MIN()`
+    4. `SUM()`
+    5. `AVG()`
+- SYNTAX:
+    - `SELECT AGG_FUNC(col_name) AS temp_col_name FROM table_name;`
+
+### UPDATE (to update existing rows)
+- SYNTAX:
+    - `UPDATE table_name SET col1=val1,col2=val2 WHERE CONDITION;`
+
+### DELETE (to delete existing rows)
+- `DELETE` query without `WHERE` clause can delete all rows from a table.
+
+- SYNTAX:
+    - `DELETE FROM table_name WHERE condition;`
+
 
 ### KEYWORDS 
 1. `DISTINCT`
     - `DISTINCT` is a keyword used with `SELECT` to remove duplicate values from the result.
+
     - Syntax:
         `SELECT DISTINCT col_name FROM table_name;`

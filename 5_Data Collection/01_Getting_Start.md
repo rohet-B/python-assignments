@@ -177,10 +177,50 @@
 - SYNTAX:
     - `DELETE FROM table_name WHERE condition;`
 
-
 ### KEYWORDS 
 1. `DISTINCT`
     - `DISTINCT` is a keyword used with `SELECT` to remove duplicate values from the result.
 
     - Syntax:
         `SELECT DISTINCT col_name FROM table_name;`
+
+
+
+### ALTER (to change the table schema)
+1. `ALTER TABLE table_name ADD COLUMN column_name datatype constraint;` -> Adds column
+2. `ALTER TABLE table_name DROP COLUMN column_name;` -> Drop Column
+3. `ALTER TABLE table_name RENAME TO new_table_name;` -> Rename Table
+4. `ALTER TABLE table_name CHANGE COLUMN old_name new_name new datatype new constraint;` -> Rename Column
+5. `ALTER TABLE table_name MODIFY col_name new_datatype new_constraint;` -> Modify Column's datatype & constraint
+
+### TRUNCATE (to delete table's data ONLY)
+- `TRUNCATE TABLE table_name;`
+
+
+## Practice Qs
+1. Create a database for your college.
+    - Create a table named Teacher to store (id,name,subject, salary)
+    - Insert following data in the table:
+        - 01,"Rohit Biswash","Full Stack",50000
+        - 02,"Manya Mishra","Business Management",50000
+        - 03,"Namo Narayan Shukla","Human Behaviour",45000
+        - 04, "Rudraksh Sharma","Communication & Ethics",49000
+    - Select teachers whose salary is more than 25k
+    - Rename the salary column of teacher table to ctc
+    - Update salary of all teachers by giving them an increment of 25%
+    - Add a new column for teachers called city. The default city should be "Gurgaon"
+    - Delete the salary column for teacher table
+
+2. Create a table to store student info (roll_no, name, city, marks)
+    - Insert following data in the table:
+        - 110,"Adam","Delhi",76
+        - 108,"Bob","Mumbai",65
+        - 124,"Casey","Pune",94
+        - 112,"Duke","Pune",90
+    - Select all students who scored 75+
+    - Find names of all citites where students are from
+    - Find the maximum marks of students from each city
+    - Find the average of the class
+    - Add a new column grade, assign grade such that:
+        - marks > 80, grade = O
+        - Marks 70-80, grade = A

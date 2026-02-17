@@ -224,3 +224,276 @@
     - Add a new column grade, assign grade such that:
         - marks > 80, grade = O
         - Marks 70-80, grade = A
+
+
+## Transactions & ACID Properties
+- A transaction in MySQL is a group of one or more SQL statements that are executed as a single unit of work.
+
+- Suppose you transfer ₹500 from your account to your friend’s account. The system first deducts ₹500 from your account and then adds ₹500 to your friend’s account. These two steps are treated as one single unit of work called a transaction. If both steps are completed successfully, the changes are saved permanently (`COMMIT`). But if any problem occurs in between, like a system error, all changes are cancelled (`ROLLBACK`) so that no money is lost. This ensures the data remains correct and safe.
+- Either all the statements are successfully completed or none of them are applied.
+- `ACID` stands for Atomicity, Consistency, Isolation, and Durability.
+- `Atomicity` means a transaction is treated as a single unit, so either all operations happen or none happen at all. 
+- `Consistency` means the database rules must always be followed before and after a transaction. For example in a bank database - account balance can't be negative & there are more such rules.
+- `Isolation` means that multiple transactions running at the same time do not affect each other’s intermediate results. 
+- `Durability` guarantees that once a transaction is committed, the changes are permanently saved even if there is a system crash or power failure.
+
+### AutoCommit in MySQL
+- In MySQL, AutoCommit is a mode where every SQL statement is automatically saved (committed) as soon as it is executed.
+- You can check it by `SELECT @@autocommit;` this command, If it returns 1, it means AutoCommit is enabled, and MySQL automatically saves each statement after it is executed.
+If SELECT `SELECT @@autocommit;` returns 0, it means AutoCommit is OFF.
+- Use `SET AUTOCOMMIT = 0;` to disable autocommit.
+- Use `SET AUTOCOMMIT = 1;` to enable autocommit.
+
+## Performing Transactions & ACID Properties practically
+- To perform this we have to disable autocommit first.
+
+- See the steps:
+    ```sql
+        -- Check AutoCommit status
+        SELECT @@AUTOCOMMIT;
+
+        -- Show existing databases
+        SHOW DATABASES;
+
+        -- Create new database
+        CREATE DATABASE BANK;
+
+        -- Use the new database
+        USE BANK;
+
+        -- Create ACCOUNTS table
+        CREATE TABLE ACCOUNTS (
+            ID INT PRIMARY KEY AUTO_INCREMENT,
+            NAME VARCHAR(50),
+            BALANCE DECIMAL(10,2)
+        );
+
+        -- Insert sample data into ACCOUNTS
+        INSERT INTO ACCOUNTS (NAME, BALANCE) VALUES
+        ("ADAM", 500.00),
+        ("BOB", 300.00),
+        ("CHARLIE", 1000.00);
+
+        -- Check inserted records
+        SELECT * FROM ACCOUNTS;
+
+        -- Disable AutoCommit
+        SET AUTOCOMMIT = 0;
+
+        -- Start a transaction
+        START TRANSACTION;
+
+        -- Update balances
+        UPDATE ACCOUNTS SET BALANCE = BALANCE - 50 WHERE ID = 1;
+        UPDATE ACCOUNTS SET BALANCE = BALANCE + 50 WHERE ID = 2;
+
+        -- Check balances within transaction
+        SELECT * FROM ACCOUNTS;
+
+        -- You can see the changes you made in a transaction within the same session, even if AutoCommit is off.
+        -- However, these changes are not permanently stored in the database until you execute: COMMIT;
+        -- To check this open another new session & run:
+        -- SELECT * FROM ACCOUNTS;
+        -- You will see the old values there.
+    ```
+- `COMMIT` is a command used to permanently save all the changes made in a transaction.
+    ```sql
+        START TRANSACTION;
+
+        -- Update balances
+        UPDATE ACCOUNTS SET BALANCE = BALANCE - 50 WHERE ID = 1;
+        UPDATE ACCOUNTS SET BALANCE = BALANCE + 50 WHERE ID = 2;
+
+        COMMIT;
+
+        -- Open another session and you will see that the changes are saved now.
+    ```
+- `ROLLBACK` is a command used to undo all changes made in the current transaction.
+- `ROLLBACK` can undo changes only if the transaction has not been committed yet.
+- Once you use `COMMIT` in a transaction, all changes are permanently saved. After committing, ROLLBACK cannot undo anything.
+    ```sql
+        START TRANSACTION;
+
+        UPDATE ACCOUNTS SET BALANCE = BALANCE - 50 WHERE ID = 1;
+        UPDATE ACCOUNTS SET BALANCE = BALANCE + 50 WHERE ID = 2;
+
+        -- Suppose, some errors occurs in this place say - network error, then undo all the changes made in transactions.
+
+        ROLLBACK;
+    ```
+
+## SavePoint in Transactions
+- `SAVEPOINT` is a way to set a bookmark inside a transaction so you can roll back to that point without undoing the entire transaction.
+
+- Imagine you are shopping online and paying for multiple items in a single transaction:
+    - You buy a laptop for ₹50,000.
+    - You buy a phone for ₹20,000.
+    - You expect a cashback of ₹1,000 on the phone, but realize the wrong cashback was applied.
+- You don’t want to cancel the laptop purchase, only the phone’s cashback adjustment.
+- See example:
+    ```sql
+        SET AUTOCOMMIT = 0;
+        START TRANSACTION;
+
+        -- Step 1: Buy laptop
+        UPDATE USER_ACCOUNT SET BALANCE = BALANCE - 50000 WHERE ID = 1;
+        INSERT INTO ORDERS (ITEM, AMOUNT) VALUES ('Laptop', 50000);
+
+        SAVEPOINT after_laptop;  -- Savepoint after laptop purchase
+
+        -- Step 2: Buy phone with cashback
+        UPDATE USER_ACCOUNT SET BALANCE = BALANCE - 20000 + 1000 WHERE ID = 1; -- applied cashback
+        INSERT INTO ORDERS (ITEM, AMOUNT) VALUES ('Phone', 20000);
+
+        -- Oops! Cashback was wrong, rollback only phone transaction
+        ROLLBACK TO after_laptop;
+
+        -- Commit the rest
+        COMMIT;
+    ```
+
+## Joins in SQL
+- A `JOIN` in SQL is used to combine rows from two or more tables based on a related column between them.
+- Types of joins:
+    1. `INNER JOIN` – Only returns rows that have matching values in both tables.
+    - SYNTAX:
+        ```sql
+            SELECT COLUMNS
+            FROM TABLEA
+            INNER JOIN TABLEB
+            ON TABLEA.COL_NAME = TABLEB.COL_NAME;
+        ```
+    - EXAMPLE:
+        ```sql
+            -- Create CUSTOMER table
+            CREATE TABLE CUSTOMER(
+                CUSTOMER_ID INT PRIMARY KEY,
+                NAME VARCHAR(50),
+                CITY VARCHAR(50)
+            );
+
+            -- Insert data into CUSTOMER
+            INSERT INTO CUSTOMER VALUES 
+                (1,"ALICE","MUMBAI"),       
+                (2, "BOB","DELHI"),
+                (3,"CHARLIE","BANGALORE"),
+                (4,"DAVID","MUMBAI");
+
+            -- Create ORDERS table
+            CREATE TABLE ORDERS(
+                ORDER_ID INT PRIMARY KEY,
+                CUSTOMER_ID INT,
+                AMOUNT INT
+            );
+
+            -- Insert data into ORDERS
+            INSERT INTO ORDERS VALUES
+                (101,1,500),
+                (102,1,900),
+                (103,2,300),
+                (104,5,700);
+
+            -- Check CUSTOMER table
+            SELECT * FROM CUSTOMER;
+
+            -- Check ORDERS table
+            SELECT * FROM ORDERS;
+
+            -- Perform INNER JOIN
+            SELECT * 
+            FROM CUSTOMER
+            INNER JOIN ORDERS
+            ON CUSTOMER.CUSTOMER_ID = ORDERS.CUSTOMER_ID;
+
+            --OR
+
+            SELECT C.CUSTOMER_ID,O.ORDER_ID,C.NAME
+            FROM CUSTOMER C
+            INNER JOIN ORDERS O
+            ON C.CUSTOMER_ID = O..CUSTOMER_ID;
+        ```
+    2. `LEFT JOIN` - All rows from the left table + matching rows from right table (NULL if no match)
+        - SYNTAX:
+            ```sql
+                SELECT columns
+                FROM tableA
+                LEFT JOIN tableB
+                ON tableA.col_name = tableB.col_name;
+            ```
+        - EXAMPLE:
+            ```sql
+                SELECT *        
+                FROM CUSTOMER
+                LEFT JOIN ORDERS
+                ON CUSTOMER.CUSTOMER_ID = ORDERS.CUSTOMER_ID;
+            ```
+    3. `RIGHT JOIN` - All rows from the right table + matching rows from left table (NULL if no match)
+        - SYNTAX:
+            ```sql
+                SELECT columns
+                FROM tableA
+                RIGHT JOIN tableB
+                ON tableA.col_name = tableB.col_name;
+            ```
+        - EXAMPLE:
+            ```sql
+                SELECT *        
+                FROM CUSTOMER
+                RIGHT JOIN ORDERS
+                ON CUSTOMER.CUSTOMER_ID = ORDERS.CUSTOMER_ID;
+            ```
+    4. `OUTER JOIN` or `FULL JOIN` - `OUTER JOIN` returns all rows from one or both tables. If a row doesn’t have a match in the other table, it still appears in the result with NULL values.
+        - In MySQL, there is no direct keyword `OUTER JOIN` to use like in some other SQL databases. To achieve the effect of a `FULL OUTER JOIN`, we need to combine a `LEFT JOIN` and a `RIGHT JOIN` using the `UNION` operator. `UNION` is used to combine the results of two or more `SELECT` queries into a single result set. By default, `UNION` removes duplicate rows, it means we get unique values. If you want to keep duplicates, use `UNION ALL`.
+        
+         - SYNTAX:
+            ```sql
+                SELECT columns
+                FROM tableA
+                LEFT JOIN tableB
+                ON tableA.col_name = tableB.col_name
+                UNION
+                SELECT columns
+                FROM tableA
+                RIGHT JOIN tableB
+                ON tableA.col_name = tableB.col_name;
+
+            ```
+        - EXAMPLE:
+            ```sql
+                -- WITHOUT DUPLICATES
+                SELECT *        
+                FROM CUSTOMER
+                LEFT JOIN ORDERS
+                ON CUSTOMER.CUSTOMER_ID = ORDERS.CUSTOMER_ID
+                UNION
+                SELECT *        
+                FROM CUSTOMER
+                RIGHT JOIN ORDERS
+                ON CUSTOMER.CUSTOMER_ID = ORDERS.CUSTOMER_ID;
+
+                -- WITH DUPLICATES
+                    SELECT *        
+                FROM CUSTOMER
+                LEFT JOIN ORDERS
+                ON CUSTOMER.CUSTOMER_ID = ORDERS.CUSTOMER_ID
+                UNION ALL
+                SELECT *        
+                FROM CUSTOMER
+                RIGHT JOIN ORDERS
+                ON CUSTOMER.CUSTOMER_ID = ORDERS.CUSTOMER_ID;
+            ```
+    5. `CROSS JOIN` - A `CROSS JOIN` returns the Cartesian product of two tables. This means every row from the first table is combined with every row of the second table. It does not require any matching column. The number of rows in the result = rows in table1 × rows in table2.
+        - SYNTAX:
+        ```sql
+            SELECT *
+            FROM tableA
+            CROSS JOIN tableB;
+        ```
+    6. `SELF JOIN` - A `SELF JOIN` is when a table is joined with itself. It is used to compare rows within the same table. You need to use table aliases to distinguish the two instances of the same table. `SELF JOINs` are not used very often in everyday SQL queries.
+        - SYNTAX:
+         ```sql
+            SELECT *
+            FROM TABLE1 AS A
+            JOIN TABLE1 AS B
+            ON A.col_name = B.col_name;
+         ```

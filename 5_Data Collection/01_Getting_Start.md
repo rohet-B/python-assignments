@@ -447,53 +447,206 @@ If SELECT `SELECT @@autocommit;` returns 0, it means AutoCommit is OFF.
         
          - SYNTAX:
             ```sql
-                SELECT columns
-                FROM tableA
-                LEFT JOIN tableB
-                ON tableA.col_name = tableB.col_name
-                UNION
-                SELECT columns
-                FROM tableA
-                RIGHT JOIN tableB
-                ON tableA.col_name = tableB.col_name;
-
+            SELECT columns
+            FROM tableA
+            LEFT JOIN tableB
+            ON tableA.col_name = tableB.col_name
+            UNION
+            SELECT columns
+            FROM tableA
+            RIGHT JOIN tableB
+            ON tableA.col_name = tableB.col_name;
             ```
         - EXAMPLE:
             ```sql
-                -- WITHOUT DUPLICATES
-                SELECT *        
-                FROM CUSTOMER
-                LEFT JOIN ORDERS
-                ON CUSTOMER.CUSTOMER_ID = ORDERS.CUSTOMER_ID
-                UNION
-                SELECT *        
-                FROM CUSTOMER
-                RIGHT JOIN ORDERS
-                ON CUSTOMER.CUSTOMER_ID = ORDERS.CUSTOMER_ID;
+            -- WITHOUT DUPLICATES
+            SELECT *        
+            FROM CUSTOMER
+            LEFT JOIN ORDERS
+            ON CUSTOMER.CUSTOMER_ID = ORDERS.CUSTOMER_ID
+            UNION
+            SELECT *        
+            FROM CUSTOMER
+            RIGHT JOIN ORDERS
+            ON CUSTOMER.CUSTOMER_ID = ORDERS.CUSTOMER_ID;
 
-                -- WITH DUPLICATES
-                    SELECT *        
-                FROM CUSTOMER
-                LEFT JOIN ORDERS
-                ON CUSTOMER.CUSTOMER_ID = ORDERS.CUSTOMER_ID
-                UNION ALL
+            -- WITH DUPLICATES
                 SELECT *        
-                FROM CUSTOMER
-                RIGHT JOIN ORDERS
-                ON CUSTOMER.CUSTOMER_ID = ORDERS.CUSTOMER_ID;
+            FROM CUSTOMER
+            LEFT JOIN ORDERS
+            ON CUSTOMER.CUSTOMER_ID = ORDERS.CUSTOMER_ID
+            UNION ALL
+            SELECT *        
+            FROM CUSTOMER
+            RIGHT JOIN ORDERS
+            ON CUSTOMER.CUSTOMER_ID = ORDERS.CUSTOMER_ID;
             ```
     5. `CROSS JOIN` - A `CROSS JOIN` returns the Cartesian product of two tables. This means every row from the first table is combined with every row of the second table. It does not require any matching column. The number of rows in the result = rows in table1 × rows in table2.
         - SYNTAX:
-        ```sql
+            ```sql
             SELECT *
             FROM tableA
             CROSS JOIN tableB;
-        ```
+            ```
     6. `SELF JOIN` - A `SELF JOIN` is when a table is joined with itself. It is used to compare rows within the same table. You need to use table aliases to distinguish the two instances of the same table. `SELF JOINs` are not used very often in everyday SQL queries.
         - SYNTAX:
-         ```sql
+            ```sql
             SELECT *
             FROM TABLE1 AS A
             JOIN TABLE1 AS B
             ON A.col_name = B.col_name;
-         ```
+            ```
+    
+    7. `LEFT EXCLUSIVE JOIN` - Returns only those records from the LEFT table that do not have a matching record in the RIGHT table. When we take a left exclusive join, we first use a `LEFT JOIN`, then we select only those records where `NULL` values appear.
+        - SYNTAX:
+
+            ```sql
+            SELECT * 
+            FROM TABLE AS A
+            JOIN TABLE2 AS B
+            ON A.column = B.column
+            WHERE B.column IS NULL;
+            ```
+        - EXAMPLE:
+            ```sql
+            SELECT *
+            FROM CUSTOMER AS A
+            LEFT JOIN ORDERS AS B
+            ON A.CUSTOMER_ID = B.CUSTOMER_ID
+            WHERE B.CUSTOMER_ID IS NULL;
+            ```
+    8. `RIGHT EXCLUSIVE JOIN` - Returns only those records from the RIGHT table that do not have a matching record in the LEFT table. When we take a right exclusive join, we first use a `RIGHT JOIN`, then we select only those records where `NULL` values appear.
+        - SYNTAX:
+
+            ```sql
+            SELECT * 
+            FROM TABLE AS A
+            JOIN TABLE2 AS B
+            ON A.column = B.column
+            WHERE A.column IS NULL;
+            ```
+        - EXAMPLE:
+            ```sql
+            SELECT *
+            FROM CUSTOMER AS A
+            RIGHT JOIN ORDERS AS B
+            ON A.CUSTOMER_ID = B.CUSTOMER_ID
+            WHERE A.CUSTOMER_ID IS NULL;
+            ```
+
+## Sub-Queries
+- A `Subquery` or `Inner Query` or a `Nested Query` is a query within another SQL Query. It involves 2 `SELECT` statements. A subquery can be used inside the `SELECT` clause, 'FROM' CLAUSE or the `WHERE` clause. 
+
+- SYNTAX:
+    ```sql
+        SELECT column
+        FROM table_name
+        WHERE col_name OPERATOR(
+            subquery
+        );
+    ```
+- EXAMPLE:
+    ```sql
+        SELECT *          
+        FROM ORDERS
+        WHERE AMOUNT > (
+            SELECT AVG(amount)
+            FROM ORDERS
+        );
+    ```
+- EXAMPLE 2:
+    ```sql
+        SELECT NAME,
+        ( SELECT COUNT(*)
+            FROM ORDERS
+            WHERE ORDERS.CUSTOMER_ID = CUSTOMER.CUSTOMER_ID
+        ) AS ORDER_COUNT
+        FROM CUSTOMER;
+    ```
+- EXAMPLE 3:
+    ```sql
+        SELECT
+            SUMMARY.CUSTOMER_ID,
+            SUMMARY.AVERAGE_AMOUNT
+        FROM
+        (
+            SELECT 
+            CUSTOMER_ID,
+            AVG(AMOUNT) AS AVERAGE_AMOUNT
+            FROM ORDERS
+            GROUP BY CUSTOMER_ID
+        ) AS SUMMARY;
+    ```
+
+## Views in SQL
+- A view is a virtual table based on the result-set of an SQL statement. 
+
+- A view always shows up-to-date data because it does not store data itself, it only stores a SELECT query. Whenever a user accesses a view, the database engine executes the original query again on the base tables. As a result, any changes made to the underlying tables are automatically reflected in the view, ensuring that the data shown is always current.
+- A view can include columns from one or more tables because it is created using a SELECT query. The SELECT statement IS used to create a view and can fetch data from a single table or combine data from multiple tables using joins. As a result, a view can present related data from different tables in a single, simplified virtual table, making queries easier to understand and use.
+- SYNTAX:
+    ```SQL
+        CREATE VIEW view1 AS
+        SELECT COL1,COL2 FROM table_name;
+    ```
+- EXAMPLE:
+    ```SQL
+        CREATE VIEW view1 AS
+        SELECT CUSTOMER_ID, NAME FROM CUSTOMER;
+
+        SELECT *
+        FROM view1;
+    ```
+
+## Stored Procedures
+- A stored procedure is a set of SQL statements that is saved in the database and can be executed whenever needed. Basically it works like a function.
+
+- SYNTAX:
+    ```SQL
+        CREATE PROCEDURE procedure_name(IN parameters datatype)
+        BEGIN
+         -- SQL STATEMENTS;
+        END;
+    ```
+- Procedures won’t work without changing the `DELIMITER`.
+- A delimiter is a symbol that tells MySQL where a SQL statement ends.
+- EXAMPLE:
+    ```sql
+        CREATE PROCEDURE CHECK_CITY(IN CUST_ID INT)
+        BEGIN
+            SELECT NAME, CITY
+            FROM ORDERS
+            WHERE CUSTOMER_ID = CUST_ID; 
+            -- Since we used ";" inside the procedure, MySQL may treat it as the end of the statement.
+        END;
+
+        -- Therefore, we use delimiter when using stored procedure.
+    ```
+    ```sql
+        DELIMITER $$
+        CREATE PROCEDURE CHECK_CITY(IN CUST_ID INT)
+        BEGIN
+            SELECT NAME, CITY
+            FROM CUSTOMER
+            WHERE CUSTOMER_ID = CUST_ID; 
+        END $$
+
+        DELIMITER ;
+    ```
+- SYNTAX to call Store Procedures:
+    ```sql
+        CALL procedure_name(arguments);
+    ```
+    ```SQL
+        -- EXAMPLE
+        CALL CHECK_CITY(3);
+    ```
+- SYNTAX to drop Store Procedures:
+    ```sql
+        DROP PROCEDURE IF EXISTS procedure_name;
+    ```
+    ```sql
+        -- EXAMPLE
+        DROP PROCEDURE IF EXISTS CHECK_CITY;
+    ```
+
+`THE END : )`
